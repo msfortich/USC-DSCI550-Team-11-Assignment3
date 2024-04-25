@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Team 11 D3 Visualizations</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Scrolling Nav CSS -->
+    <link href="./css/styles/scrolling-nav.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="./css/styles/styles.css" rel="stylesheet">
+    <script src="./js/jquery.js"></script>
+
+</head>
+
+<body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top" style="background-image: url(./images/bigfoot.png); background-size:cover;">
+
+<!-- Header -->
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand page-scroll" href="./index.html#page-top" style="color:white">Home</a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav navbar-custom">
+                <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
+                <li class="hidden"><a class="page-scroll" href="./index.html#page-top" style="color:white"></a></li>
+            </ul>
+            <a href="http://usc.edu" class="pull-right">
+              <img src="./images/usc-primary-logotype.svg" width="176px" height="38px"></img>
+            </a>
+
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+
+<!-- Navigation -->
+    <div id="secondary-header"> </div>
+    <div class="container" style="margin-bottom: 2%">
+    <ul class="nav nav-tabs" id="tabs" style="margin-top:7%">
+        <li class="active"><a href="#mime-viz" data-toggle="tab">D3 Visualizations</a></li>
+    </ul>
+    </div>
+
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane fade in active" id="mime-viz">
+            <div class="container">
+                <div class="row">
+                    <!-- First Row of 3 Cards -->
+                    <div class="col-sm-6 col-md-4">
+                        <div class="thumbnail">
+                            <div class="caption">
+                                <h3 style="text-align:center;">Sightings/Hotspots per State Bubble Map</h3>
+                                <p><a href="./html/BubbleMapofSightingsByState.html" class="btn btn-primary" role="button">
+                                    <img src="./images/bubblemap.png" style="height: auto;width: auto;">Click to View
+                                </a></p>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="col-sm-6 col-md-4">
+                        <div class="thumbnail">
+                            <div class="caption">
+                                <h3 style="text-align:center;">Heatmap of Witnesses Counts per State by Season</h3>
+                                <p><a href="./html/StateWitnessCountBySeason.html" class="btn btn-primary" role="button">
+                                    <img src="./images/heatmap.png" style="height: auto;width: auto;">Click to View
+                                </a></p>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="col-sm-6 col-md-4">
+                        <div class="thumbnail">
+                            <div class="caption">
+                                <h3 style="text-align:center;">Closest Park/Class/Month/Severity Sunburst </h3>
+                                <p><a href="./html/sunburstClassMonthWeather.html" class="btn btn-primary" role="button">
+                                    <img src="./images/sunburst.png" style="height: auto;width: auto;">Click to View
+                                </a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Second Row of 2 Cards Centered -->
+                <div class="centered-row">
+                    <div class="col-md-4">
+                        <div class="thumbnail">
+                            <div class="caption">
+                                <h3 style="text-align:center;">Classes per State Grouped Bar Chart</h3>
+                                <p><a href="./html/grouped_bar.html" class="btn btn-primary" role="button">
+                                    <img src="./images/barGraph.png" style="height: auto;width: auto;">Click to View
+                                </a></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="thumbnail">
+                            <div class="caption">
+                                <h3 style="text-align:center;">Number of Sightings and Witness Counts by Year</h3>
+                                <p><a href="./html/over_time.html" class="btn btn-primary" role="button">
+                                    <img src="./images/lineGraph.png" style="height: auto;width: auto;">Click to View
+                                </a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+
+
+    <!-- jQuery -->
+    <script src="./js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="./js/bootstrap.min.js"></script>
+
+    <!-- Scrolling Nav JavaScript -->
+    <script src="./js/jquery.easing.min.js"></script>
+    <script src="./js/scrolling-nav.js"></script>
+
+
+</body>
+
+</html>
