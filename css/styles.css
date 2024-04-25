@@ -1,0 +1,113 @@
+
+/* Enhanced button hover effect */
+.btn-primary:hover, .btn-default:hover {
+   transform: scale(1.05); /* Slight increase in size */
+   transition: transform 0.3s ease-in-out;
+}
+
+/* Improved accessibility for focus states */
+.btn-primary:focus, .btn-default:focus,
+.btn-primary.focus, .btn-default.focus {
+   outline: 2px solid #ffdb4d; /* Highlight focus for keyboard navigation */
+   outline-offset: 2px;
+}
+
+/* Responsive thumbnails */
+.thumbnail img {
+   max-width: 100%; /* Ensure images are responsive */
+   height: auto; /* Maintain aspect ratio */
+}
+
+/* Accessibility improvements */
+a:hover, a:focus {
+   text-decoration: underline; /* Improve visibility for links */
+}
+
+/* Typography consistency */
+body, button, input, textarea {
+   font-family: 'National', sans-serif; /* Consistent font usage */
+}
+
+/* Color scheme adjustments */
+.navbar, .navbar-collapse {
+   background-color: #990000; /* Deep red background for navbar */
+}
+
+/* Navbar link color contrast */
+.navbar .navbar-nav > li > a {
+   color: #fff; /* Ensure high contrast for readability */
+}
+
+/* Responsive design adjustments */
+@media (max-width: 768px) {
+   .nav-ul-second {
+       margin-left: 0; /* Adjust navbar spacing on smaller screens */
+   }
+}
+
+/* Improved navbar dropdown visibility */
+.navbar .nav li.dropdown.open > .dropdown-toggle,
+.navbar .nav li.dropdown.active > .dropdown-toggle,
+.navbar .nav li.dropdown.open.active > .dropdown-toggle {
+   color: #fff; /* Text color */
+   background-color: rgba(227,190,66,0.8); /* Slightly transparent yellow */
+}
+
+/* Stylish panel hover effect */
+#about .stylish-panel > div:hover > div {
+   transform: translateY(-10px); /* Move up on hover */
+   box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* Add shadow for depth */
+   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+/* Aligns cards to the right side of the container */
+.tab-content .container {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+/* Ensures cards have a consistent width and margin for alignment */
+.tab-content .container .col-md-4 {
+    margin-bottom: 20px;
+    /* Optional: Adjust width as necessary for your design */
+    width: calc(33.333% - 20px); 
+    margin-left: 20px;
+}
+.centered-row {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.centered-row .col-md-4 {
+    flex: 0 0 33.333%;
+    max-width: 33.333%;
+    /* Ensures that each card in the second row takes up one-third of the container's width */
+}
+
+.btn-primary {
+   position: relative; /* Ensure the button is positioned correctly within the caption */
+   margin-top: 10px; /* Space above the button */
+}
+
+.thumbnail {
+   width: 100%; /* Responsive to the column width */
+   height: auto; /* Adjust to content */
+   overflow: hidden; /* Hide parts of the image that overflow */
+   position: relative; /* For positioning the caption */
+   display: block; /* Change to block to ensure proper scaling */
+}
+
+.thumbnail img {
+   width: 100%; /* Ensure image fills the container */
+   height: auto; /* Maintain aspect ratio */
+}
+
+.caption {
+   position: absolute; /* Overlay caption on the image */
+   bottom: 0;
+   background: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay for readability */
+   color: #fff;
+   width: 100%;
+   padding: 10px;
+   text-align: center;
+}
