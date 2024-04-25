@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grouped Bar Chart</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+
+    <h1>Bar Graph</h1>
+    <p>This graph compares the number of Bigfoot sightings by class and state.</p>
+
+    <svg id="chart"></svg>
+    <script>
+        d3.json("../data/class_agg.json").then(function(data) {
+            const margin = { top: 50, right: 50, bottom: 50, left: 100 };
+            const width = 1200 - margin.left - margin.right;
+            const height = 600 - margin.top - margin.bottom;
+
+            const svg = d3.select("#chart")
+                          .attr("width", width + margin.left + margin.right)
+                          .attr("height", height + margin.top + margin.bottom)
+                          .append("g")
+                          .attr("transform", `translate(${margin.left},${margin.top})`);
+
+            const classes = [...new Set(data.map(d => d.Class))];
+
+            const x = d3.scaleBand()
+                        .domain(data.map(d => d.State))
+                        .range([0, width])
+                        .padding(0.1);
+
+            const y = d3.scaleLinear()
+                        .domain([0, d3.max(data, d => d.count)])
+                        .nice()
+                        .range([height, 0]);
+
+            const color = d3.scaleOrdinal()
+                            .domain(classes)
+                            .range(d3.schemeCategory10);
+            svg.selectAll(".bar")
+               .data(data)
+               .enter()
+               .append("rect")
+               .attr("class", "bar")
+               .attr("x", d => x(d.State) + x.bandwidth() / classes.length * classes.indexOf(d.Class))
+               .attr("y", d => y(d.count))
+               .attr("width", x.bandwidth() / classes.length)
+               .attr("height", d => height - y(d.count))
+               .attr("fill", d => color(d.Class));
+
+            svg.append("g")
+               .attr("transform", `translate(0,${height})`)
+               .call(d3.axisBottom(x))
+               .selectAll("text")
+               .attr("dy", ".35em")
+               .attr("transform", "rotate(45)")
+               .style("text-anchor", "start");
+
+            svg.append("g")
+               .call(d3.axisLeft(y));
+
+            svg.append("text")
+               .attr("transform", "rotate(-90)")
+               .attr("y", -70)
+               .attr("x", 0 - (height / 2))
+               .attr("dy", "1em")
+               .style("text-anchor", "middle")
+               .text("Number of Sightings");
+
+            const legend = svg.selectAll(".legend")
+                              .data(classes)
+                              .enter()
+                              .append("g")
+                              .attr("class", "legend")
+                              .attr("transform", (_, i) => `translate(0,${20 * i})`);
+
+            legend.append("rect")
+                  .attr("x", width - 20)
+                  .attr("width", 15)
+                  .attr("height", 15)
+                  .style("fill", color);
+
+            legend.append("text")
+                  .attr("x", width - 26)
+                  .attr("y", 9)
+                  .attr("dy", ".35em")
+                  .style("text-anchor", "end")
+                  .text(d => d);
+        }).catch(function(error) {
+            console.error("Error loading data:", error);
+        });
+    </script>
+</body>
+</html>

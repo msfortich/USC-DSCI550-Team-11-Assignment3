@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number of Sightings and Average Witness Count Over Time</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+   <h1>Line Graph</h1>
+    <p>This line graph shows the number of Bigfoot sightings and the average number of witnesses by year.</p>
+    <svg id="line-chart"></svg>
+    <script>
+        d3.json("../data/over_time.json").then(function(data) {
+            var margin = { top: 20, right: 80, bottom: 100, left: 60 },
+                width = 1200 - margin.left - margin.right,
+                height = 700 - margin.top - margin.bottom;
+            var svg = d3.select("#line-chart")
+                        .attr("width", width + margin.left + margin.right)
+                        .attr("height", height + margin.top + margin.bottom)
+                        .append("g")
+                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            var xScale = d3.scaleLinear()
+                           .domain([d3.min(data, function(d) { return +d.yr; }), d3.max(data, function(d) { return +d.yr; })])
+                           .range([0, width])
+                           .nice();
+
+            var yScale1 = d3.scaleLinear()
+                            .domain([0, d3.max(data, function(d) { return d.TotalSightings; })])
+                            .range([height, 0]);
+
+            var yScale2 = d3.scaleLinear()
+                            .domain([0, d3.max(data, function(d) { return d.AvgWitnessCount; })])
+                            .range([height, 0]);
+
+            svg.append("g")
+               .attr("transform", "translate(0," + height + ")")
+               .call(d3.axisBottom(xScale).ticks(10).tickFormat(d3.format("d")));
+
+            svg.append("g")
+               .call(d3.axisLeft(yScale1))
+               .append("text")
+               .attr("fill", "#000")
+               .attr("transform", "rotate(-90)")
+               .attr("x", -height / 2.5)
+               .attr("y", 1)
+               .attr("dy", "-3em")
+               .attr("text-anchor", "end")
+               .attr("font-size", "14px")
+               .text("Number of Sightings");
+
+            svg.append("g")
+               .attr("transform", "translate(" + width + ",0)")
+               .call(d3.axisRight(yScale2))
+               .append("text")
+               .attr("fill", "#000")
+               .attr("transform", "rotate(-90)")
+               .attr("x", -height / 2.5)
+               .attr("y", -margin.right + 110)
+               .attr("dy", "1em")
+               .attr("text-anchor", "end")
+               .attr("font-size", "14px")
+               .text("Average Witness Count");
+
+            var line1 = d3.line()
+                          .x(function(d) { return xScale(d.yr); })
+                          .y(function(d) { return yScale1(d.TotalSightings); });
+
+            var line2 = d3.line()
+                          .x(function(d) { return xScale(d.yr); })
+                          .y(function(d) { return yScale2(d.AvgWitnessCount); });
+
+            svg.append("path")
+               .datum(data)
+               .attr("fill", "none")
+               .attr("stroke", "steelblue")
+               .attr("stroke-width", 5)
+               .attr("d", line1);
+
+            svg.append("path")
+               .datum(data)
+               .attr("fill", "none")
+               .attr("stroke", "green")
+               .attr("stroke-width", 5)
+               .attr("d", line2);
+
+            var legend = svg.append("g")
+                            .attr("class", "legend")
+                            .attr("transform", "translate(" + (width / 2) + "," + (height + margin.bottom / 2) + ")");
+
+            legend.append("rect")
+                  .attr("x", 0)
+                  .attr("y", 0)
+                  .attr("width", 18)
+                  .attr("height", 18)
+                  .attr("fill", "steelblue");
+
+            legend.append("text")
+                  .attr("x", 24)
+                  .attr("y", 9)
+                  .attr("dy", ".35em")
+                  .style("text-anchor", "start")
+                  .text("Number of Sightings");
+
+            legend.append("rect")
+                  .attr("x", 0)
+                  .attr("y", 25)
+                  .attr("width", 18)
+                  .attr("height", 18)
+                  .attr("fill", "green");
+
+            legend.append("text")
+                  .attr("x", 24)
+                  .attr("y", 34)
+                  .attr("dy", ".35em")
+                  .style("text-anchor", "start")
+                  .text("Average Witness Count");
+
+        });
+    </script>
+</body>
+</html>

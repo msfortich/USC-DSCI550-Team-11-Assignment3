@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bubble Map with D3.js</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .tooltip {
+            position: absolute;
+            visibility: hidden;
+            background-color: lightgrey;
+            padding: 5px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bubble Map</h1>
+    <p>This visualization represents the sightings and hotspots across the United States. Sightings are marked with blue circles, and hotspot states have a red border around the sightings. The bigger the circle, the more sightings there are.</p>
+    <div id="tooltip" class="tooltip"></div>
+    <svg width="960" height="600"></svg>
+
+    <script>
+    const width = 960, height = 600;
+    const svg = d3.select("svg");
+    const tooltip = d3.select("#tooltip");
+
+    const projection = d3.geoAlbersUsa()
+                         .translate([width / 2, height / 2])
+                         .scale([1000]);
+
+    const path = d3.geoPath()
+                   .projection(projection);
+
+    const zoom = d3.zoom()
+                   .scaleExtent([1, 8])
+                   .on("zoom", (event) => {
+                       svg.selectAll('path').attr('transform', event.transform);
+                       svg.selectAll('circle').attr('transform', event.transform);
+                   });
+
+    svg.call(zoom);
+
+    Promise.all([
+        d3.json("../data/SightingCountandGeo.json"),
+        d3.json("../data/bigfoothotspots.json"),
+        d3.json("../data/gz_2010_us_outline_500k.json")
+    ]).then(function([sightingsData, hotspotsData, usOutline]) {
+        const hotspotStates = new Set(hotspotsData.filter(h => h["BigFoot Hotspot"]).map(h => h.State));
+
+        const radiusScale = d3.scaleSqrt()
+            .domain([0, d3.max(sightingsData, d => d.Sightings)])
+            .range([0, 20]);
+
+        // Sightings
+        svg.selectAll("circle")
+            .data(sightingsData)
+            .enter().append("circle")
+            .attr("cx", d => projection([d.longitude, d.latitude])[0])
+            .attr("cy", d => projection([d.longitude, d.latitude])[1])
+            .attr("r", d => radiusScale(d.Sightings))
+            .style("fill", "steelblue")
+            .style("opacity", 0.75)
+            .style("stroke", d => hotspotStates.has(d.State) ? "red" : "white")
+            .style("stroke-width", d => hotspotStates.has(d.State) ? "3px" : "1px")
+            .on("mouseover", function(event, d) {
+                tooltip.style("visibility", "visible")
+                       .text(`${d.State}: ${d.Sightings} sightings`)
+                       .style("top", (event.pageY - 10) + "px")
+                       .style("left", (event.pageX + 10) + "px");
+            })
+            .on("mousemove", function(event) {
+                tooltip.style("top", (event.pageY - 10) + "px")
+                       .style("left", (event.pageX + 10) + "px");
+            })
+            .on("mouseout", function() {
+                tooltip.style("visibility", "hidden");
+            });
+
+        // US Outline
+        svg.selectAll("path")
+            .data(usOutline.features)
+            .enter().append("path")
+            .attr("d", path)
+            .style("fill", "none")
+            .style("stroke", "black");
+    });
+    </script>
+</body>
+</html>

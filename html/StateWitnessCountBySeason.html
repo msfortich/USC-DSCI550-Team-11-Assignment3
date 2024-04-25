@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Interactive Heatmap Visualization</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .heatmap-box {
+            stroke: #555;
+        }
+        .axis-label {
+            font-size: 11px;
+            fill: #000;
+        }
+        .tooltip {
+            position: absolute;
+            background-color: #f9f9f9;
+            border: 1px solid #d4d4d4;
+            border-radius: 4px;
+            padding: 4px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Witnesses Heatmap</h1>
+    <p>This heatmap visualizes the total count of multiple witnesses by state and season across the United States. It provides insights into patterns and hotspots of activity.</p>
+    <div id="heatmap"></div>
+    <div class="tooltip"></div>
+    <script>
+        d3.json('../data/Witnesses.json').then(function(loadedData) {
+            const allStates = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"];
+            const seasons = ["Winter", "Spring", "Summer", "Fall"];
+
+            const aggregatedData = d3.rollups(loadedData,
+                v => d3.sum(v, leaf => leaf.WitnessCount),
+                d => d.State, d => d.Season
+            ).map(([State, seasons]) => {
+                const seasonsObj = Object.fromEntries(seasons);
+                return seasons.map(([Season, WitnessCount]) => ({
+                    State, Season, WitnessCount
+                }));
+            }).flat();
+
+            const data = allStates.flatMap(state => {
+                return seasons.map(season => {
+                    const existingEntry = aggregatedData.find(d => d.State === state && d.Season === season);
+                    return existingEntry || { State: state, Season: season, WitnessCount: 0 };
+                });
+            });
+
+            const margin = {top: 60, right: 0, bottom: 100, left: 100},
+                width = 960 - margin.left - margin.right,
+                height = allStates.length * 25 - margin.top - margin.bottom,
+                gridSizeX = Math.floor(width / seasons.length),
+                gridSizeY = 25;
+
+            const tooltip = d3.select("body").append("div")
+                .attr("class", "tooltip")
+                .style("opacity", 0);
+
+            const colorScale = d3.scaleSequential(d => d3.interpolateInferno(Math.log1p(d) / Math.log1p(d3.max(data, d => d.WitnessCount))));
+
+            const svg = d3.select("#heatmap").append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+
+            const heatMapBoxes = svg.selectAll(".heatmap-box")
+                .data(data)
+                .enter().append("rect")
+                .attr("class", "heatmap-box")
+                .attr("x", d => seasons.indexOf(d.Season) * gridSizeX)
+                .attr("y", d => allStates.indexOf(d.State) * gridSizeY)
+                .attr("width", gridSizeX - 1)
+                .attr("height", gridSizeY - 1)
+                .style("fill", d => colorScale(d.WitnessCount))
+                .on("mouseover", (event, d) => {
+                    tooltip.transition().style("opacity", .9);
+                    tooltip.html(`State: ${d.State}<br>Season: ${d.Season}<br>WitnessCount: ${d.WitnessCount}`)
+                        .style("left", (event.pageX + 5) + "px")
+                        .style("top", (event.pageY - 28) + "px");
+                })
+                .on("mouseout", () => {
+                    tooltip.transition().style("opacity", 0);
+                });
+
+            svg.selectAll(".stateLabel")
+                .data(allStates)
+                .enter().append("text")
+                .attr("class", "axis-label")
+                .attr("x", -6)
+                .attr("y", (d, i) => i * gridSizeY + gridSizeY / 2)
+                .style("text-anchor", "end")
+                .text(d => d);
+
+            svg.selectAll(".seasonLabel")
+                .data(seasons)
+                .enter().append("text")
+                .attr("class", "axis-label")
+                .attr("x", (d, i) => i * gridSizeX + gridSizeX / 2)
+                .attr("y", -10) 
+                .style("text-anchor", "middle")
+                .style("font-size", "14px")
+                .text(d => d);
+        }).catch(function(error) {
+            console.log(error);
+        });
+    </script>
+</body>
+</html>
